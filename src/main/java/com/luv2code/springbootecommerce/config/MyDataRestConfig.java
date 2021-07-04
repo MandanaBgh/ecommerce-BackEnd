@@ -1,7 +1,9 @@
 package com.luv2code.springbootecommerce.config;
 
+import com.luv2code.springbootecommerce.entity.Country;
 import com.luv2code.springbootecommerce.entity.Product;
 import com.luv2code.springbootecommerce.entity.ProductCategory;
+import com.luv2code.springbootecommerce.entity.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
@@ -24,16 +26,20 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
         HttpMethod[] theUnSuppHttpMethods = {HttpMethod.POST,HttpMethod.DELETE,HttpMethod.PUT};
-        config.getExposureConfiguration()
-                .forDomainType(Product.class)
-                .withItemExposure(((metdata, httpMethods) -> httpMethods.disable(theUnSuppHttpMethods)))
-                .withCollectionExposure(((metdata, httpMethods) -> httpMethods.disable(theUnSuppHttpMethods)));
 
+        disableHttpMethods(Product.class,config, theUnSuppHttpMethods);
+        disableHttpMethods(ProductCategory.class,config, theUnSuppHttpMethods);
+        disableHttpMethods(Country.class,config, theUnSuppHttpMethods);
+        disableHttpMethods(State.class,config, theUnSuppHttpMethods);
+
+        exposeId(config);
+    }
+
+    private void disableHttpMethods(Class theClass,RepositoryRestConfiguration config, HttpMethod[] theUnSuppHttpMethods) {
         config.getExposureConfiguration()
-                .forDomainType(ProductCategory.class)
+                .forDomainType(theClass)
                 .withItemExposure(((metdata, httpMethods) -> httpMethods.disable(theUnSuppHttpMethods)))
                 .withCollectionExposure(((metdata, httpMethods) -> httpMethods.disable(theUnSuppHttpMethods)));
-        exposeId(config);
     }
 
     private void exposeId(RepositoryRestConfiguration config) {

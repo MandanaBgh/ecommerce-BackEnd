@@ -1,6 +1,7 @@
 package com.luv2code.springbootecommerce.entity;
 
 import lombok.Data;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.List;
@@ -21,5 +22,6 @@ public class Country {
     private String name;
 
     @OneToMany(mappedBy = "country")
-    private List<State> state;
+    @JsonIgnore
+    private List<State> states;
 }
